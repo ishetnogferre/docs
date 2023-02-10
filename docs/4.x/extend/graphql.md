@@ -847,6 +847,7 @@ Similar to the [queries](#queries) example, this class implements `getMutations(
 ```php
 namespace mynamespace\gql\mutations;
 
+use Craft;
 use mynamespace\helpers\Gql as GqlHelper;
 use mynamespace\gql\interfaces\Widget;
 use mynamespace\gql\resolvers\mutations\Widget as WidgetMutationResolver;
