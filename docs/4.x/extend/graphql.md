@@ -5,7 +5,6 @@ Developers can use Craft’s [GraphQL implementation](../graphql.md) to provide 
 If you’ve created a custom element or field type, chances are you’ll want to make its data available via the GraphQL API.
 
 ## Overview
-
 Unlike Craft’s element queries that are built on the fly, a GraphQL schema needs to define every possible query and data type up front.
 
 This fundamental difference between Craft and GraphQL APIs, combined with Craft’s flexible content modeling, means _mapping out_ your custom implementation will probably take more effort than writing the code to make it happen.
@@ -847,7 +846,7 @@ Similar to the [queries](#queries) example, this class implements `getMutations(
 namespace mynamespace\gql\mutations;
 
 use mynamespace\helpers\Gql as GqlHelper;
-use mynamespace\gql\interfaces\Widget;
+use mynamespace\gql\interfaces\elements\Widget;
 use mynamespace\gql\resolvers\mutations\Widget as WidgetMutationResolver;
 use craft\gql\base\Mutation;
 use GraphQL\Type\Definition\Type;
