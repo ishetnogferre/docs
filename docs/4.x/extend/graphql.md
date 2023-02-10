@@ -5,6 +5,7 @@ Developers can use Craft’s [GraphQL implementation](../graphql.md) to provide 
 If you’ve created a custom element or field type, chances are you’ll want to make its data available via the GraphQL API.
 
 ## Overview
+
 Unlike Craft’s element queries that are built on the fly, a GraphQL schema needs to define every possible query and data type up front.
 
 This fundamental difference between Craft and GraphQL APIs, combined with Craft’s flexible content modeling, means _mapping out_ your custom implementation will probably take more effort than writing the code to make it happen.
@@ -283,7 +284,7 @@ Every available part of Craft’s content model, and every kind of data your cus
 
 Craft’s <craft4:craft\gql\GqlEntityRegistry> keeps track of these GraphQL types, and you’ll use it to add, fetch, and modify them.
 
-When adding fields to a given type, you should run them through <craft4:craft\gql\TypeManager::prepareFieldDefinitions()>. This makes it possible for others to programmatically [modify type fields](#modifying-type-fields) you’re introducing.
+When adding fields to a given type, you should run them through <craft4:craft\services\Gql::prepareFieldDefinitions()>. This makes it possible for others to programmatically [modify type fields](#modifying-type-fields) you’re introducing.
 
 ### Scalar Types
 
@@ -437,6 +438,7 @@ It does this in order to define a single GraphQL type for our custom Widget elem
 ```php
 namespace mynamespace\gql\interfaces\elements;
 
+use Craft;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\InterfaceType;
 use craft\gql\GqlEntityRegistry;
@@ -467,7 +469,7 @@ class Widget extends \craft\gql\interfaces\Element
     public static function getFieldDefinitions(): array
     {
         // Add our custom widget’s field to common ones for all elements
-        return TypeManager::prepareFieldDefinitions(array_merge(
+        return Craft::$app->getGql()->prepareFieldDefinitions(array_merge(
             parent::getFieldDefinitions(),
             [
                 'approved' => [
@@ -584,7 +586,7 @@ use mynamespace\gql\types\elements\Widget;
 use mynamespace\gql\interfaces\elements\Widget as WidgetInterface;
 use craft\gql\base\GeneratorInterface;
 use craft\gql\GqlEntityRegistry;
-use craft\gql\TypeManager;
+use Craft;
 
 class WidgetType implements GeneratorInterface
 {
@@ -599,7 +601,7 @@ class WidgetType implements GeneratorInterface
     {
         $pluginType = new WidgetElement();
         $typeName = $pluginType->getGqlTypeName();
-        $widgetFields = TypeManager::prepareFieldDefinitions(
+        $widgetFields = Craft::$app->getGql()->prepareFieldDefinitions(
             WidgetInterface::getFieldDefinitions(),
             $typeName
         );
@@ -639,7 +641,7 @@ use mynamespace\gql\interfaces\elements\Widget as WidgetInterface;
 use mynamespace\helpers\Gql as MyGqlHelper;
 use craft\gql\base\GeneratorInterface;
 use craft\gql\GqlEntityRegistry;
-use craft\gql\TypeManager;
+use Craft;
 
 class WidgetType implements GeneratorInterface
 {
@@ -675,7 +677,7 @@ class WidgetType implements GeneratorInterface
         $contentFieldGqlTypes = self::getContentFields($context);
 
         // Merge in GQL types for the widget element’s own custom fields
-        $widgetFields = TypeManager::prepareFieldDefinitions(
+        $widgetFields = Craft::$app->getGql()->prepareFieldDefinitions
             array_merge(
                 WidgetInterface::getFieldDefinitions(),
                 $contentFieldGqlTypes
@@ -846,7 +848,7 @@ Similar to the [queries](#queries) example, this class implements `getMutations(
 namespace mynamespace\gql\mutations;
 
 use mynamespace\helpers\Gql as GqlHelper;
-use mynamespace\gql\interfaces\elements\Widget;
+use mynamespace\gql\interfaces\Widget;
 use mynamespace\gql\resolvers\mutations\Widget as WidgetMutationResolver;
 use craft\gql\base\Mutation;
 use GraphQL\Type\Definition\Type;
